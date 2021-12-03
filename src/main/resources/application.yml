@@ -3,4 +3,5 @@ spring:
   application:
     name: dailyRecord
 
-
+server:
+  port: 8080
