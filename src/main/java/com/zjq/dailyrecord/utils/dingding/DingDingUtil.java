@@ -112,7 +112,7 @@ public class DingDingUtil {
         String webhook = "https://oapi.dingtalk.com/robot/send?access_token=xxx";
         String content = getContent();
         ArrayList<String> mobileList = Lists.newArrayList();
-        mobileList.add("1768xxx66");
+        mobileList.add("1768xx66");
         sendMsgToGroupChat(webhook,false,mobileList,content);
         //sendMsgToGroupChatSDK(webhook);
     }
