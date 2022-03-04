@@ -105,6 +105,21 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.78</version>
 		</dependency>
+
+		<!--钉钉SDK
+		官方SDK相关地址 https://open.dingtalk.com/document/resourcedownload/download-server-sdk-->
+        <!--旧版SDK-->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibaba-dingtalk-service-sdk</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <!--新版SDK-->
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>dingtalk</artifactId>
+			<version>1.2.25</version>
+		</dependency>
 	</dependencies>
 
 
