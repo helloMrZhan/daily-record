@@ -109,10 +109,10 @@ public class DingDingUtil {
 
     public static void main(String[] args) throws ApiException {
         //把webhook设置成对应群的即可
-        String webhook = "https://oapi.dingtalk.com/robot/send?access_token=b31a2898076a75a324111f695301cce560e3fee450fa116c8ac8a7406aa67acd";
+        String webhook = "https://oapi.dingtalk.com/robot/send?access_token=xxx";
         String content = getContent();
         ArrayList<String> mobileList = Lists.newArrayList();
-        mobileList.add("17681864366");
+        mobileList.add("1768xxx66");
         sendMsgToGroupChat(webhook,false,mobileList,content);
         //sendMsgToGroupChatSDK(webhook);
     }
