@@ -18,11 +18,20 @@ public class User {
 
     private String city;
 
+    private Integer score;
+
     public  User(){}
 
     public User(String name,Integer age,String city){
         this.name = name;
         this.age = age;
         this.city = city;
+    }
+
+    public User(String name,Integer age,String city,Integer score){
+        this.name = name;
+        this.age = age;
+        this.city = city;
+        this.score = score;
     }
 }
