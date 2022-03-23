@@ -13,7 +13,7 @@ import java.util.List;
  * @author zjq
  * @date 2022/3/21
  */
-public class ListUtil {
+public class ListSort {
 
     public static List<User> getUserList(){
         List<User> userList = new ArrayList<>();
