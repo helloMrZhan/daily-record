@@ -1,4 +1,4 @@
-package com.zjq.dailyrecord.utils.list;
+package com.zjq.dailyrecord.algorithm.list;
 
 import com.zjq.dailyrecord.entity.User;
 import org.junit.Test;

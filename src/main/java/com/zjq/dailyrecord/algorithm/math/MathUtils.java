@@ -1,4 +1,4 @@
-package com.zjq.dailyrecord.utils.math;
+package com.zjq.dailyrecord.algorithm.math;
 
 /**
  * Math常用的数学运算(包括取整、取绝对值、保留几位小数等)
