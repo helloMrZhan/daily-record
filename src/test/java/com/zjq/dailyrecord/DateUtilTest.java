@@ -2,12 +2,16 @@ package com.zjq.dailyrecord;
 
 
 import cn.hutool.core.date.BetweenFormater;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import com.zjq.dailyrecord.dateAndTime.DateUtil;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.junit.Test;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -31,7 +35,7 @@ public class DateUtilTest {
         String dateStr = DateUtil.date2Str(new Date());
         System.out.println(dateStr);
         //Date转字符串指定格式
-        String dateStr2 = DateUtil.date2Str("yyyy/MM/dd",new Date());
+        String dateStr2 = DateUtil.date2Str("yyyy/MM/dd", new Date());
         System.out.println(dateStr2);
     }
 
@@ -57,7 +61,7 @@ public class DateUtilTest {
     }
 
     @Test
-    public void dateBetween(){
+    public void dateBetween() {
         String beginDateStr = "2022-02-01 22:33:23";
         Date beginDate = DateUtil.parse(beginDateStr);
 
@@ -72,7 +76,7 @@ public class DateUtilTest {
     }
 
     @Test
-    public void dateStartAndEnd(){
+    public void dateStartAndEnd() {
         String dateStr = "2022-04-07 10:33:23";
         Date date = DateUtil.parse(dateStr);
 
@@ -84,4 +88,27 @@ public class DateUtilTest {
         Date endOfDay = DateUtil.endOfDay(date);
         System.out.println(endOfDay);
     }
+
+    @Test
+    public void dateTimeDeal() {
+
+//        DateTime dateTime = DateTime.parse("2017-06-03 06:59:59", org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+        DateTime dateTime = DateTime.parse("2017-06-03 07:00:00", org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+        System.out.println("当前时间 : " + dateTime.toString("yyyy-MM-dd HH:mm:ss"));
+
+        // 大于等于7点，时间处理成当天的23:59:59
+        if (dateTime.getHourOfDay() >= 7) {
+            dateTime = new DateTime(dateTime.getYear(),
+                    dateTime.getMonthOfYear(), dateTime.getDayOfMonth(),
+                    23, 59, 59, 0);
+            System.out.println("处理后的时间 : " + dateTime.toString("yyyy-MM-dd HH:mm:ss"));
+        } else {
+            // 小于七点，时间处理成前一天的23:59:59
+            dateTime = new DateTime(dateTime.getYear(),
+                    dateTime.getMonthOfYear(),
+                    dateTime.getDayOfMonth() - 1, 23, 59, 59, 0);
+            System.out.println("处理后的时间 : " + dateTime.toString("yyyy-MM-dd HH:mm:ss"));
+        }
+    }
+
 }
