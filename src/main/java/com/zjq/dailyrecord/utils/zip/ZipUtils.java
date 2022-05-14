@@ -1,11 +1,9 @@
 package com.zjq.dailyrecord.utils.zip;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtils {
@@ -266,5 +264,44 @@ public class ZipUtils {
 
         }
 
+    }
+
+    /**
+     * 解压zip文件到指定目录
+     * @param fileZip
+     * @param path_to_dest
+     * @throws IOException
+     */
+    public static void readZip(String fileZip,String path_to_dest) throws IOException {
+
+        try (FileInputStream fis = new FileInputStream(fileZip);
+             ZipInputStream zis =
+                     new ZipInputStream(new BufferedInputStream(fis))) {
+
+            ZipEntry entry;
+
+            // 从ZipInputStream读取每个条目，直到没有
+            // 发现更多条目，返回值为空
+            // getNextEntry()方法。
+            while ((entry = zis.getNextEntry()) != null) {
+                System.out.println("Unzipping: " + entry.getName());
+
+                int size;
+                byte[] buffer = new byte[2048];
+                File fileOut = new File(path_to_dest+"\\"+entry.getName());
+                try (FileOutputStream fos =
+                             new FileOutputStream(fileOut);
+                     BufferedOutputStream bos =
+                             new BufferedOutputStream(fos, buffer.length)) {
+
+                    while ((size = zis.read(buffer, 0, buffer.length)) != -1) {
+                        bos.write(buffer, 0, size);
+                    }
+                    bos.flush();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

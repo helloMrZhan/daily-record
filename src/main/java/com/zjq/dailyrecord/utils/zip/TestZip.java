@@ -20,4 +20,17 @@ public class TestZip {
 		 OutputStream fileOutputStream = new FileOutputStream(new File(outDir));
 		 ZipUtils.toZip(inDir, fileOutputStream);
    }
+
+    /**
+     * 测试解压本地zip文件
+     * @throws Exception
+     */
+    @Test
+    public void readZip() throws Exception {
+        //解压后路径
+        String path_to_dest = "E:\\developer\\NavicatUnzip";
+        //zip文件路径
+        String fileZip = "E:\\developer\\NavicatZip\\Navicat.zip";
+        ZipUtils.readZip(fileZip, path_to_dest);
+    }
 }
