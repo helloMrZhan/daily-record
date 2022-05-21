@@ -6,9 +6,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONWriter;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.junit.Test;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zjq
@@ -76,6 +82,7 @@ public class Fastjson1 {
         User user = JSON.parseObject(jsonObjectStr, User.class);
         log.info(user.toString());
     }
+
 
     /**
      * json字符串转JavaBean数组对象
