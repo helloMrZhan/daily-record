@@ -19,7 +19,7 @@ public class Base64Test {
      */
     @Test
     public void testUrlFileToBase64() throws Exception {
-        String BASE64Str = Base64Util.file("https://zbsz-pay-test.oss-cn-hangzhou.aliyuncs.com/upload/20220513/1652423425942-91321391690267369M");
+        String BASE64Str = Base64Util.file("https://zjq.com/upload/20220513/1652423425942-91321391690267369M");
         System.out.println("BASE64Str:"+BASE64Str);
     }
 }
