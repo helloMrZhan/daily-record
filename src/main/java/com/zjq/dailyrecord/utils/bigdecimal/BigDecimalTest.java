@@ -72,7 +72,7 @@ public class BigDecimalTest {
 
     @Test
     public void halfUpValueTest() {
-        BigDecimal big1 = new BigDecimal(100.455845);
+        BigDecimal big1 = new BigDecimal(100.455145);
         System.out.println(BigDecimalUtil.halfUpValue(big1,3));
     }
 
