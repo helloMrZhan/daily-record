@@ -1,9 +1,6 @@
 package com.zjq.dailyrecord.algorithm.list;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 使用Java最快捷的找出两个大量数据List集合的不同元素
@@ -20,11 +17,12 @@ public class FindDifferentList {
         // javaAPI();
         // doubleFor();
 
-        List<String> listA = dataList(1000);
+        List<String> listA = dataList(1000000);
         //集合A添加一个集合B没有的元素
         listA.add("onlyA10086");
-        List<String> listB = dataList(1006);
-        getDifferListByMap(listA,listB);
+        List<String> listB = dataList(1000006);
+        getDifferListByMapPlus(listA,listB);
+        //getDifferListByMap(listA,listB);
     }
 
 
@@ -86,7 +84,7 @@ public class FindDifferentList {
      *
      * @param listA 集合A
      * @param listB 集合B
-     * @return list<String>
+     * @return list<String> 不同元素集合
      */
     public static List<String> getDifferListByMap(List<String> listA, List<String> listB) {
         List<String> differList = new ArrayList<>();
@@ -114,6 +112,88 @@ public class FindDifferentList {
         System.out.println("集合A和集合B不同的元素："+differList);
         System.out.println("使用map方式遍历, 对比耗时: " + (endTime - beginTime)+"毫秒。");
         return differList;
+    }
+
+    /**
+     * 找出两个集合中不同的元素
+     *
+     * @param collmax
+     * @param collmin
+     * @return
+     */
+    public static Collection getDifferListByMapPlus(Collection collmax, Collection collmin) {
+        //使用LinkedList防止差异过大时,元素拷贝
+        Collection csReturn = new LinkedList();
+        Collection max = collmax;
+        Collection min = collmin;
+        long beginTime = System.currentTimeMillis();
+        //先比较大小,这样会减少后续map的if判断次数
+        if (collmax.size() < collmin.size()) {
+            max = collmin;
+            min = collmax;
+        }
+        //直接指定大小,防止再散列
+        Map<Object, Integer> map = new HashMap<Object, Integer>(max.size());
+        for (Object object : max) {
+            map.put(object, 1);
+        }
+        for (Object object : min) {
+            if (map.get(object) == null) {
+                csReturn.add(object);
+            } else {
+                map.put(object, 2);
+            }
+        }
+        for (Map.Entry<Object, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == 1) {
+                csReturn.add(entry.getKey());
+            }
+        }
+        long endTime = System.currentTimeMillis();
+        System.out.println("集合A和集合B不同的元素："+csReturn);
+        System.out.println("使用map方式遍历, 对比耗时: " + (endTime - beginTime)+"毫秒。");
+        return csReturn;
+    }
+
+    /**
+     * 找出两个集合中相同的元素
+     *
+     * @param collmax
+     * @param collmin
+     * @return
+     */
+    public static Collection getSameListByMap(Collection collmax, Collection collmin) {
+        //使用LinkedList防止差异过大时,元素拷贝
+        Collection csReturn = new LinkedList();
+        Collection max = collmax;
+        Collection min = collmin;
+        //先比较大小,这样会减少后续map的if判断次数
+        if (collmax.size() < collmin.size()) {
+            max = collmin;
+            min = collmax;
+        }
+        //直接指定大小,防止再散列
+        Map<Object, Integer> map = new HashMap<Object, Integer>(max.size());
+        for (Object object : max) {
+            map.put(object, 1);
+        }
+        for (Object object : min) {
+            if (map.get(object) != null) {
+                csReturn.add(object);
+            }
+        }
+        return csReturn;
+    }
+
+    /**
+     * 获取两个集合的不同元素,去除重复
+     *
+     * @param collmax
+     * @param collmin
+     * @return
+     */
+    public static Collection getDiffentNoDuplicate(Collection collmax, Collection collmin) {
+        return new HashSet(getDifferListByMapPlus(collmax, collmin));
     }
 
     /**
