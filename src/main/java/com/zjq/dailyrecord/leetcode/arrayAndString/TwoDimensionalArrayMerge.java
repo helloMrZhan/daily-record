@@ -13,7 +13,11 @@ import java.util.*;
 public class TwoDimensionalArrayMerge {
 
     public static void main(String[] args) {
-        int[][] intervals = {{1,3},{2,6},{8,10},{15,18}};
+        int[][] intervals = {
+                {1,3},
+                {2,6},
+                {8,10},
+                {15,18}};
         //int[][] merge = merge(intervals);
         int[][] merge = mergeVector(intervals);
         System.out.println(Arrays.deepToString(merge));
