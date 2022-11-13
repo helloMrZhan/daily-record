@@ -1,7 +1,7 @@
 package com.zjq.dailyrecord;
 
 
-import cn.hutool.core.date.BetweenFormater;
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUnit;
 import com.zjq.dailyrecord.dateAndTime.DateUtil;
 import org.joda.time.DateTime;
@@ -71,7 +71,7 @@ public class DateUtilTest {
         long betweenDay = DateUtil.between(beginDate, endDate, DateUnit.DAY);
         System.out.println(betweenDay);
         //格式化时间差(37天1小时)
-        String formatBetween = DateUtil.formatBetween(beginDate, endDate, BetweenFormater.Level.HOUR);
+        String formatBetween = DateUtil.formatBetween(beginDate, endDate, BetweenFormatter.Level.HOUR);
         System.out.println(formatBetween);
     }
 
