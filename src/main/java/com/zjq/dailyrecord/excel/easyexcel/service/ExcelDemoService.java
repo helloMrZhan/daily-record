@@ -40,7 +40,7 @@ public class ExcelDemoService {
      * 导出模板
      * @param response
      */
-    public void exportTemplate(HttpServletResponse response) throws IOException {
+    public void exportTemplateZip(HttpServletResponse response) throws IOException {
 
         String zipName = "模板.zip";
         response.setCharacterEncoding("utf-8");
@@ -123,12 +123,78 @@ public class ExcelDemoService {
 
     }
 
+    /**
+     * 导出模板
+     * @param response
+     */
+    public void exportTemplate(HttpServletResponse response) throws IOException {
+
+        String zipName = "模板.xls";
+        response.setCharacterEncoding("utf-8");
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode(zipName, "UTF-8"));
+        ServletOutputStream out = response.getOutputStream();
+        List<BusinessField> parentFieldList = getBusinessFieldList();
+        //定义表头
+        List<List<String>> headList = new ArrayList<>();
+        //定义数据体
+        List<List<Object>> dataList = new ArrayList<>();
+        // 指定标红色的列
+        List<Integer> columns = Arrays.asList();
+        // 指定批注
+        HashMap<Integer, String> annotationsMap = new HashMap<>();
+        HashMap<Integer, List<String>> dropDownMap = new HashMap<>();
+        //主表字段
+        for (int i = 0;i<parentFieldList.size();i++){
+            BusinessField businessField = parentFieldList.get(i);
+            headList.add(Lists.newArrayList(businessField.getName()));
+            if (StringUtils.isNotBlank(businessField.getControlType())){
+                if (businessField.getControlType().contains("select")){
+                    List<String> tDataDictionaries = new ArrayList<>();
+                    tDataDictionaries.add("男");
+                    tDataDictionaries.add("女");
+//                  存储需要下拉框的值，这里的key是需要设置为下拉框的列数，value是下拉框的值，是list
+                    if (tDataDictionaries != null && tDataDictionaries.size()>0) {
+                        dropDownMap.put(i,tDataDictionaries);
+                    }
+                }
+            }
+        }
+        ExcelWriter excelWriter = EasyExcel.write().excelType(ExcelTypeEnum.XLS).build();
+        //构建一个sheet页
+        WriteSheet writeSheet = EasyExcel.writerSheet("sheet1").build();
+//            TltleHandler titleHandler = new TltleHandler(columns, IndexedColors.RED.index,annotationsMap,dropDownMap);
+//            ExayExcelUtils.writeExcelWithModel(response.getOutputStream(), dataList, headList, "sheet1", (CellWriteHandler) titleHandler);
+// 头的策略
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        // 单元格策略
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+        // 初始化表格样式
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
+// SelectSheetWriteHandler(dropDownMap)  是设置下拉框的类
+        WriteTable writeTable = EasyExcel.writerTable(0).head(headList).registerWriteHandler(horizontalCellStyleStrategy).registerWriteHandler(new SelectSheetWriteHandler(dropDownMap)).needHead(Boolean.TRUE).build();
+        excelWriter.write(dataList, writeSheet, writeTable);
+        // 开始导出
+//            excelWriterSheetBuilder.doWrite(dataList);
+        Workbook workbook = excelWriter.writeContext().writeWorkbookHolder().getWorkbook();
+
+        //将excel对象以流的形式写入压缩流
+        workbook.write(out);
+        out.flush();
+        out.close();
+
+    }
+
     private List<BusinessField> getBusinessFieldList() {
         List<BusinessField> businessFieldList = new ArrayList<>();
         BusinessField businessField = new BusinessField();
         businessField.setName("姓名");
-        businessField.setControlType("select");
+        businessField.setControlType("text");
         businessFieldList.add(businessField);
+        BusinessField businessField2 = new BusinessField();
+        businessField2.setName("性别");
+        businessField2.setControlType("select");
+        businessFieldList.add(businessField2);
         return businessFieldList;
     }
 
