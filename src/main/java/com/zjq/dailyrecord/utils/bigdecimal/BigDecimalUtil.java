@@ -173,4 +173,36 @@ public class BigDecimalUtil {
     public static String toPlainString(@NotNull BigDecimal num1, int tScala, int tRoundingMode) {
         return num1.setScale(tScala, tRoundingMode).toPlainString();
     }
+
+    /**
+     * 元转成万元
+     * @param yuan 元
+     * @param scale 保留几位小数
+     * @return
+     */
+    public static BigDecimal yuanToTenThousandYuan(BigDecimal yuan,Integer scale){
+        BigDecimal tenThousandYuan = yuan;
+        if (yuan != null) {
+            // 元转万元
+            tenThousandYuan = yuan.divide(new BigDecimal("10000"), scale, BigDecimal.ROUND_HALF_DOWN);
+            log.debug("元格式化万元：前 {}, 后 {}", yuan, tenThousandYuan);
+        }
+        return tenThousandYuan;
+    }
+
+    /**
+     * 万元转成元
+     * @param tenThousandYuan 万元
+     * @return
+     */
+    public static BigDecimal tenThousandYuanToYuan(BigDecimal tenThousandYuan){
+        BigDecimal yuan = tenThousandYuan;
+        if(tenThousandYuan !=null) {
+            // 万元转元
+            yuan = tenThousandYuan.multiply(new BigDecimal("10000"));
+            log.debug("万元格式化元：前 {}, 后 {}", tenThousandYuan, yuan);
+        }
+        return yuan;
+    }
+
 }

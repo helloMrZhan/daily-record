@@ -81,4 +81,15 @@ public class BigDecimalTest {
         BigDecimal big1 = new BigDecimal(100.455);
         System.out.println(BigDecimalUtil.roundingModeValue(big1,2,BigDecimal.ROUND_HALF_DOWN));
     }
+
+    @Test
+    public void tenThousandYuanAndYuanTest() {
+        BigDecimal tenThousandYuan = new BigDecimal("100.455");
+        BigDecimal yuan = new BigDecimal("1008888");
+        System.out.println(BigDecimalUtil.tenThousandYuanToYuan(tenThousandYuan));
+        System.out.println(BigDecimalUtil.tenThousandYuanToYuan(null));
+        System.out.println(BigDecimalUtil.yuanToTenThousandYuan(yuan,6));
+    }
+
+
 }
