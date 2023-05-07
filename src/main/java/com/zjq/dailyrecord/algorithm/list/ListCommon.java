@@ -64,4 +64,27 @@ public class ListCommon {
         System.out.println(result);
     }
 
+
+
+    @Test
+    public void isSonList(){
+        List<String> listA = new ArrayList<>();
+        listA.add("b");
+        listA.add("c");
+        List<String> listB = new ArrayList<>();
+        listB.add("c");
+        listB.add("b");
+        Boolean isSonList = listA.containsAll(listB);
+        System.out.println("listB 是 listA 的子集："+ isSonList);
+    }
+
+    @Test
+    public void isSonList2() throws Exception {
+        List<String> creditCounterGuaranteeMeasures = Arrays.asList("02,03".split(","));
+        List<String> schemeCounterGuaranteeMeasures = Arrays.asList("08,01".split(","));
+        if(!schemeCounterGuaranteeMeasures.containsAll(creditCounterGuaranteeMeasures)){
+            throw new Exception("反担保措施必须在产品方案的反担保措施范围内选择");
+        }
+    }
+
 }
