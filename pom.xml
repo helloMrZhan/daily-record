@@ -56,11 +56,6 @@
 			<version>2.1.4</version>
 		</dependency>
 
-		<dependency>
-			<groupId>cn.hutool</groupId>
-			<artifactId>hutool-all</artifactId>
-			<version>5.4.3</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.baomidou</groupId>
@@ -187,5 +182,28 @@
 		</dependency>
 	</dependencies>
 
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://maven.aliyun.com/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<url>https://maven.aliyun.com/nexus/content/groups/public</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>
