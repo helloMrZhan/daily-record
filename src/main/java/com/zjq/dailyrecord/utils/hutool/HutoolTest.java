@@ -1,23 +1,39 @@
 package com.zjq.dailyrecord.utils.hutool;
 
+import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.*;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
+import cn.hutool.core.lang.Validator;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.*;
+import cn.hutool.cron.CronUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.zjq.dailyrecord.excel.openoffice.OnlinePreviewController;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.crypto.SecretKey;
+import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.security.KeyPair;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -298,13 +314,140 @@ public class HutoolTest {
     public void MapUtil() {
         //将多个键值对加入到Map中
         Map<Object, Object> map = MapUtil.of(new String[][]{
-                {"key1", "value1"},
+                {"43255key1", "value1"},
                 {"key2", "value2"},
                 {"key3", "value3"}
         });
         //判断Map是否为空
         MapUtil.isEmpty(map);
         MapUtil.isNotEmpty(map);
+    }
+
+    /**
+     * 脱敏工具类（以手机号、银行卡号、身份证号、密码信息的脱敏为例）
+     */
+    @Test
+    public void DesensitizedUtil() {
+        String phone="13723231234";
+        //输出：137****1234
+        System.out.println(DesensitizedUtil.mobilePhone(phone));
+
+        String bankCard="6217000130008255666";
+        //输出：6217 **** **** *** 5666
+        System.out.println(DesensitizedUtil.bankCard(bankCard));
+
+        String idCardNum="411021199901102321";
+        //只显示前4位和后2位
+        //输出：4110************21
+        System.out.println(DesensitizedUtil.idCardNum(idCardNum,4,2));
+
+        String password="www.jd.com_35711";
+        //输出：****************
+        System.out.println(DesensitizedUtil.password(password));
+    }
+
+    @Test
+    public void AnnotationUtil() {
+        //获取指定类、方法、字段、构造器上的注解列表
+        Annotation[] annotationList = AnnotationUtil.getAnnotations(OnlinePreviewController.class, false);
+        log.info("annotationUtil annotations:{}", annotationList);
+        //获取指定类型注解
+        Api api = AnnotationUtil.getAnnotation(OnlinePreviewController.class, Api.class);
+        log.info("annotationUtil api value:{}", api.tags());
+        //获取指定类型注解的值
+        Object annotationValue = AnnotationUtil.getAnnotationValue(OnlinePreviewController.class, RequestMapping.class);
+        System.out.println("annotationValue = " + annotationValue);
+    }
+
+
+    @Test
+    public void SecureUtil() {
+        //MD5加密
+        String str = "123456";
+        String md5Str = SecureUtil.md5(str);
+        log.info("secureUtil md5:{}", md5Str);
+
+        // 生成密钥对（用于非对称加密）
+        KeyPair rsa = SecureUtil.generateKeyPair("RSA");
+    }
+
+    @Test
+    public void Validator() {
+        //判断是否为邮箱地址
+        boolean result = Validator.isEmail("zjq666@qq.com");
+        log.info("Validator isEmail:{}", result);
+        //判断是否为手机号码
+        result = Validator.isMobile("18666668888");
+        log.info("Validator isMobile:{}", result);
+        //判断是否为IPV4地址
+        result = Validator.isIpv4("192.168.3.101");
+        log.info("Validator isIpv4:{}", result);
+        //判断是否为汉字
+        result = Validator.isChinese("你好");
+        log.info("Validator isChinese:{}", result);
+        //判断是否为身份证号码（18位中国）
+        result = Validator.isCitizenId("123456");
+        log.info("Validator isCitizenId:{}", result);
+        //判断是否为URL
+        result = Validator.isUrl("http://www.baidu.com");
+        log.info("Validator isUrl:{}", result);
+        //判断是否为生日
+        result = Validator.isBirthday("2020-02-01");
+        log.info("Validator isBirthday:{}", result);
+    }
+
+    @Test
+    public void FileUtil() {
+        //创建临时文件
+        FileUtil.createTempFile("123456", ".txt", new File("D:\\temp"),false);
+        //获取文件后缀名
+        String fileName = "test.txt";
+        String extension = FileUtil.extName(fileName);
+        log.info("fileUtil extension:{}", extension);
+        //获取文件大小
+        File file = new File("D:\\elevoc_dnn_kernel.log");
+        long size = FileUtil.size(file);
+        log.info("fileUtil size:{}", size);
+        //获取文件内容
+        String content = FileUtil.readString(file, Charset.forName("UTF-8"));
+        log.info("fileUtil content:{}", content);
+    }
+
+    @Test
+    public void DigestUtil() {
+        String password = "123456";
+        //计算MD5摘要值，并转为16进制字符串
+        String result = DigestUtil.md5Hex(password);
+        log.info("DigestUtil md5Hex:{}", result);
+        //计算SHA-256摘要值，并转为16进制字符串
+        result = DigestUtil.sha256Hex(password);
+        log.info("DigestUtil sha256Hex:{}", result);
+        //生成Bcrypt加密后的密文，并校验
+        String hashPwd = DigestUtil.bcrypt(password);
+        boolean check = DigestUtil.bcryptCheck(password,hashPwd);
+        log.info("DigestUtil bcryptCheck:{}", check);
+    }
+
+    @Test
+    public void HttpUtil() {
+        //发送GET请求
+        String result = HttpUtil.get("https://www.baidu.com");
+        log.info("HttpUtil get:{}", result);
+        //发送POST请求
+        JSONObject jsonObject = JSONUtil.createObj();
+        jsonObject.putOnce("customerTel","17688886666");
+        jsonObject.putOnce("remarks","备注1：我是HttpRequest测试请求！");
+
+        HttpResponse response = HttpRequest.post("http://127.0.0.1:9001/api/order/saveRecord")
+                //设置请求头(可任意加)
+                .header("Content-Type", "application/json")
+                // 添加token
+                .header("Authorization","eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ7E3NjJ9.9vgMKLpftjcXxmvViSyJDnBcXrO6c3bLlatwD83frAs")
+                //请求参数
+                .body(jsonObject.toString())
+                .execute();
+        log.info("请求响应结果：{}",response);
+        log.info("响应数据：{}",response.body());
     }
 
 }
