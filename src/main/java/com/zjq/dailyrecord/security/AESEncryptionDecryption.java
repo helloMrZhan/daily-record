@@ -7,6 +7,9 @@ import java.util.Base64;
 
 /**
  * AES加密解密工具类
+ * 密钥（Key）：AES-128需要一个16字节的密钥。在这个示例中，我使用了"1234567890123456"作为密钥。
+ * 初始化向量（IV）：AES-CBC模式需要一个16字节的IV。在这个示例中，我使用了"1234567890123456"作为IV。
+ * Base64编码：加密后的数据被Base64编码，以便于传输和存储。
  * @author zjq
  */
 public class AESEncryptionDecryption {
