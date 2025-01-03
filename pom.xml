@@ -238,6 +238,28 @@
 		</dependency>
 		<!-- 二维码生成工具end-->
 
+		<!--ocr识别-->
+		<dependency>
+			<groupId>net.sourceforge.tess4j</groupId>
+			<artifactId>tess4j</artifactId>
+			<version>4.5.4</version>
+		</dependency>
+
+		<!--华为云ocr识别-->
+		<dependency>
+			<groupId>com.huaweicloud.sdk</groupId>
+			<artifactId>huaweicloud-sdk-ocr</artifactId>
+			<version>3.1.118</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>dysmsapi20170525</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+
+
 	</dependencies>
 
 
