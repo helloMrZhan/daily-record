@@ -70,6 +70,12 @@
 			<version>3.4.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.23</version>
+		</dependency>
+
 		<!-- 通用Mapper -->
 		<dependency>
 			<groupId>tk.mybatis</groupId>
@@ -167,11 +173,11 @@
 		</dependency>
 
 		<!--swagger工具类-->
+		<!--引入Knife4j的官方start包,该指南选择Spring Boot版本<3.0,开发者需要注意-->
 		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-annotations</artifactId>
-			<version>1.5.22</version>
-			<scope>compile</scope>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+			<version>4.4.0</version>
 		</dependency>
 
 

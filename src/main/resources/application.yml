@@ -24,3 +24,20 @@ mybatis:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: com.zjq.dailyrecord.mapper
 
+# knife4j配置信息
+knife4j:
+  enable: true
+  openapi:
+    title: 共饮一杯无专属文档
+    description: 欲知后事如何，请关注共饮一杯无https://zhanjq.blog.csdn.net/
+    email: 111@foxmail.com
+    concat: 共饮一杯无
+    url: https://zhanjq.blog.csdn.net/
+    version: v1.0
+    license: Apache 2.0
+    terms-of-service-url: https://stackoverflow.com/
+  basic:
+    enable: true
+    username: admin
+    password: admin
+
