@@ -8,7 +8,7 @@ spring:
       primary: master # 主数据源名称
       datasource:
         master: # 主数据源配置
-          url: jdbc:mysql://localhost:3306/xiaoman?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+          url: jdbc:mysql://localhost:3306/daily-record?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
           username: root
           password: root
           # MySQL 8.0
@@ -17,7 +17,7 @@ spring:
           driver-class-name: com.mysql.jdbc.Driver
 
 server:
-  port: 8080
+  port: 9999
 
 # 指定mapper接口扫描和mapper配置文件扫描的包
 mybatis:
@@ -41,3 +41,10 @@ knife4j:
     username: admin
     password: admin
 
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    call-setters-on-nulls: true
+  typeAliasesPackage: com.zjq.dailyrecord.**.entity,com.zjq.dailyrecord.**.model
+  mapperLocations: classpath*:mapper/**/*Mapper.xml

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjq.dailyrecord.mapper.mock.MockMapper">
+
+    <select id="queryMockRouteTableName" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        select * from mock_route where mock_route = #{mockRoute} limit 1
+    </select>
+
+    <select id="queryMockData" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        select * from ${tableName} ${ew.customSqlSegment}
+    </select>
+</mapper>
