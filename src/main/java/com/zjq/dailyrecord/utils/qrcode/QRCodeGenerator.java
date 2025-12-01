@@ -7,7 +7,9 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
@@ -62,6 +64,39 @@ public class QRCodeGenerator {
                 image.setRGB(x, y, bitMatrix.get(x, y) ? Color.BLACK.getRGB() : Color.WHITE.getRGB());
             }
         }
+
+        ImageIO.write(image, "PNG", new File(path.toUri()));
+    }
+
+    /**
+     * 生成高质量二维码图片(项目根目录)
+     * @param text
+     * @param width
+     * @param height
+     * @param filePath
+     * @throws WriterException
+     * @throws IOException
+     */
+    public static void generateHighQRCodeImage(String text, int width, int height, String filePath) throws WriterException, IOException {
+        // 生成二维码时设置合适的参数
+        Map<EncodeHintType, Object> hints = new HashMap<>();
+        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        hints.put(EncodeHintType.MARGIN, 1); // 设置边距
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); // 错误纠正级别
+
+        BitMatrix bitMatrix = new MultiFormatWriter().encode(
+                text,
+                BarcodeFormat.QR_CODE,
+                width,
+                height,
+                hints
+        );
+
+        // 保存图像时使用高质量参数
+        MatrixToImageConfig config = new MatrixToImageConfig();
+        BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix, config);
+
+        Path path = FileSystems.getDefault().getPath(filePath);
 
         ImageIO.write(image, "PNG", new File(path.toUri()));
     }
@@ -457,6 +492,18 @@ public class QRCodeGenerator {
             String url = "https://zhanjq.blog.csdn.net/";
             String filePath = "qr-code.png";
             generateQRCodeImage(url, 200, 200, filePath);
+            System.out.println("QR code generated successfully at: " + filePath);
+        } catch (WriterException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void generateHighQRCodeImage() {
+        try {
+            String url = "https://zhanjq.blog.csdn.net/";
+            String filePath = "qr-code.png";
+            generateHighQRCodeImage(url, 200, 200, filePath);
             System.out.println("QR code generated successfully at: " + filePath);
         } catch (WriterException | IOException e) {
             e.printStackTrace();
