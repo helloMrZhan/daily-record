@@ -27,6 +27,8 @@ public class Java8NewFeature {
         userList.add(new User("李四",4,"上海"));
         userList.add(new User("王五",5,"广州"));
         userList.add(new User("赵六",6,"深圳"));
+        userList.add(new User("小王",7,"上海"));
+        userList.add(new User("赵六",7,"伦敦"));
         return userList;
     }
 
@@ -147,4 +149,42 @@ public class Java8NewFeature {
         System.out.println(humanList);
     }
     //----------------map() end--------------------------------------------------
+
+    /**
+     * 根据List集合中的某个属性进行去重，并保持顺序
+     */
+    @Test
+    public void userListToDistinctList(){
+        List<User> userList = getListUser();
+        // 根据 paramNameEn 去重并保留第一个
+        List<User> distinctList = userList.stream()
+                .collect(Collectors.toMap(
+                        User::getName,
+                        param -> param,
+                        (existing, replacement) -> existing,
+                        LinkedHashMap::new
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+        System.out.println(distinctList);
+    }
+
+
+    /**
+     * Map排序
+     */
+    @Test
+    public void mapSorted(){
+        Map<String, String> map = new HashMap<>();
+        map.put("a", "1");
+        map.put("aa", "11");
+        map.put("c", "3");
+        map.put("ab", "22");
+        map.put("b", "2");
+        map.put("d", "4");
+        Map<String, String> treeMap = new TreeMap<>();
+        treeMap.putAll( map);
+        System.out.println(treeMap);
+    }
 }
