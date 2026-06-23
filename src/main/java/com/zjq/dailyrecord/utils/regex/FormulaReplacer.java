@@ -3,6 +3,8 @@ package com.zjq.dailyrecord.utils.regex;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,27 +30,27 @@ public class FormulaReplacer {
                 "                        \"metaKey\": \"node_ocmk4v6gsf4\",\n" +
                 "                        \"formId\": \"2013801619569352705\",\n" +
                 "                        \"formName\": \"患者入组表单\",\n" +
-                "                        \" metaComponent\":\"FormInput\"\n" +
+                "                        \"metaComponent\":\"FormInput\"\n" +
                 "                    },\n" +
                 "                    {\n" +
                 "                        \"key\": \"value003\",\n" +
                 "                        \"label\": \"脱落时间\",\n" +
-                "                        \"value\":\"2026-01-10\",\n" +
+                "                        \"value\":\"\",\n" +
                 "                        \"operator\":\"大于等于\",\n" +
                 "                        \"metaKey\": \"node_ocmk4v6gsfu\",\n" +
                 "                        \"formId\": \"2013801619569352705\",\n" +
                 "                        \"formName\": \"患者入组表单\",\n" +
-                "                        \" metaComponent\":\"FormDatePicker\"\n" +
+                "                        \"metaComponent\":\"FormDatePicker\"\n" +
                 "                    },\n" +
                 "                    {\n" +
                 "                        \"key\": \"value003\",\n" +
                 "                        \"label\": \"脱落时间\",\n" +
-                "                        \"value\":\"2026-01-17\",\n" +
+                "                        \"value\":\"\",\n" +
                 "                        \"operator\":\"小于等于\",\n" +
                 "                        \"metaKey\": \"node_ocmk4v6gsfu\",\n" +
                 "                        \"formId\": \"2013801619569352705\",\n" +
                 "                        \"formName\": \"患者入组表单\",\n" +
-                "                        \" metaComponent\":\"FormDatePicker\"\n" +
+                "                        \"metaComponent\":\"FormDatePicker\"\n" +
                 "                    },\n" +
                 "                    {\n" +
                 "                        \"key\": \"value003\",\n" +
@@ -58,7 +60,7 @@ public class FormulaReplacer {
                 "                        \"metaKey\": \"node_ocmkdna3702\",\n" +
                 "                        \"formId\": \"2013801619569352705\",\n" +
                 "                        \"formName\": \"患者入组表单\",\n" +
-                "                        \" metaComponent\":\"FormSelect\"\n" +
+                "                        \"metaComponent\":\"FormSelect\"\n" +
                 "                    }\n" +
                 "                ]";
 
@@ -70,7 +72,7 @@ public class FormulaReplacer {
 
         // 重新实现一个更精确的替换方法
         String resultFormula = replaceFormulaPlaceholders(cleanFormula, fieldObjects);
-        
+
         System.out.println("替换后公式: " + resultFormula);
     }
 
@@ -101,14 +103,18 @@ public class FormulaReplacer {
             Deque<JSONObject> queue = groupedFields.get(metaKey);
             if (queue != null && !queue.isEmpty()) {
                 JSONObject condition = queue.removeFirst(); // 取出第一个并移除，确保顺序正确
-                String replacementValue = condition.getStr("value");
+
+                // --- 新增逻辑：处理 FormDatePicker 的空值情况 ---
+                String replacementValue = processDateValueIfNeeded(condition);
+                // --- 新增逻辑结束 ---
+
                 // 如果值是字符串，可能需要加上引号，具体取决于公式语法
                 // 这里假设值是日期或数字，直接替换。如果是字符串，可能需要处理 "SMA" -> "'SMA'"
-                 if ("等于".equals(condition.getStr("operator"))) { // 如果是等于操作符且值是字符串，可能需要加引号
-                     if (!isNumeric(replacementValue)) {
-                         replacementValue = "\"" + replacementValue + "\"";
-                     }
-                 }
+                if ("等于".equals(condition.getStr("operator"))) { // 如果是等于操作符且值是字符串，可能需要加引号
+                    if (!isNumeric(replacementValue)) {
+                        replacementValue = "\"" + replacementValue + "\"";
+                    }
+                }
                 matcher.appendReplacement(sb, replacementValue);
             } else {
                 // 如果找不到对应的值，保留原占位符
@@ -119,6 +125,45 @@ public class FormulaReplacer {
 
         return sb.toString();
     }
+
+    /**
+     * 处理日期选择器的值，如果组件是日期选择器且值为空，则根据操作符返回默认日期。
+     * @param condition 包含字段配置信息的JSONObject
+     * @return 最终用于替换的值
+     */
+    private static String processDateValueIfNeeded(JSONObject condition) {
+        String value = condition.getStr("value");
+        String metaComponent = condition.getStr("metaComponent");
+        String operator = condition.getStr("operator");
+
+        // 检查组件类型、值是否为空
+        if ("FormDatePicker".equals(metaComponent) && (value == null || value.trim().isEmpty())) {
+            LocalDate today = LocalDate.now();
+            LocalDate calculatedDate;
+
+            switch (operator) {
+                case "大于等于":
+                case "大于":
+                    // 当前日期往前推一个月
+                    calculatedDate = today.minusMonths(1);
+                    break;
+                case "小于等于":
+                case "小于":
+                    // 使用今天日期
+                    calculatedDate = today;
+                    break;
+                default:
+                    // 如果操作符不是预期的几种，则返回原始值（虽然它是空的）
+                    return value;
+            }
+            // 格式化为 "yyyy-MM-dd" 并返回
+            return calculatedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+
+        // 如果不满足特殊条件，则返回原始值
+        return value;
+    }
+
 
     /**
      * 辅助方法：判断字符串是否为数字
